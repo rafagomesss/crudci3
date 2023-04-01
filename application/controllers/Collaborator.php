@@ -6,41 +6,26 @@ class Collaborator extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
+
 		$this->load->library('session');
+
 		if (!$this->session->userdata('logged_in')) {
 			return redirect('autenticar/acessar');
 		}
+
+		$this->navData = [
+			'nav' => true,
+			'loggedUser' => $this->session->userdata ?? null,
+		];
+
 		$this->load->library('form_validation');
 		$this->load->model('Collaborator_model', 'collaborator');
 		$this->load->model('User_model', 'user');
 	}
 
-	public function index()
+	private function rulesMessages(): array
 	{
-		$data = [
-			'nav' => true,
-			'loggedUser' => $this->session->userdata,
-			'collaborators' => $this->collaborator->all(),
-		];
-		$this->load->view('templates/header', $data);
-		$this->load->view('pages/collaborator/index');
-		$this->load->view('templates/footer');
-	}
-
-	public function create()
-	{
-		$data = [
-			'nav' => true,
-			'loggedUser' => $this->session->userdata,
-		];
-		$this->load->view('templates/header', $data);
-		$this->load->view('pages/collaborator/create', ['users' => $this->user->all('id, email')]);
-		$this->load->view('templates/footer');
-	}
-
-	public function store()
-	{
-		$rules = [
+		return [
 			[
 				'field' => 'first_name',
 				'label' => 'Nome',
@@ -69,9 +54,29 @@ class Collaborator extends CI_Controller
 					'min_length' => '%s deve ter ao menos 3 caracteres!',
 				],
 			]
-		];
 
-		$this->form_validation->set_rules($rules);
+		];
+	}
+
+	public function index(): void
+	{
+		$data = ['collaborators' => $this->collaborator->all(),];
+		$this->load->view('templates/header', $this->navData);
+		$this->load->view('pages/collaborator/index', $data);
+		$this->load->view('templates/footer');
+	}
+
+	public function create(): void
+	{
+		$data = ['users' => $this->user->all('id, email'),];
+		$this->load->view('templates/header', $this->navData);
+		$this->load->view('pages/collaborator/create', $data);
+		$this->load->view('templates/footer');
+	}
+
+	public function store()
+	{
+		$this->form_validation->set_rules($this->rulesMessages());
 
 		if ($this->form_validation->run() === false) {
 			return $this->create();
@@ -89,7 +94,7 @@ class Collaborator extends CI_Controller
 			'neighborhood' => $this->input->post('neighborhood'),
 			'position' => $this->input->post('position'),
 			'sector' => $this->input->post('sector'),
-			'user_id' => $this->input->post('user'),
+			'user_id' => empty($this->input->post('user')) ? null : $this->input->post('user'),
 		];
 
 		$this->collaborator->store($collaborator);
@@ -97,55 +102,23 @@ class Collaborator extends CI_Controller
 		return redirect('colaboradores');
 	}
 
-	public function edit(int $id)
+	public function edit(int $id): void
 	{
-		$collaborator = $this->collaborator->findById($id);
 		$data = [
-			'nav' => true,
-			'loggedUser' => $this->session->userdata,
+			'collaborator' => $this->collaborator->findById($id),
+			'users' => $this->user->all('id, email'),
 		];
-		$this->load->view('templates/header', $data);
-		$this->load->view('pages/collaborator/update', ['collaborator' => $collaborator, 'users' => $this->user->all('id, email')]);
+		$this->load->view('templates/header', $this->navData);
+		$this->load->view('pages/collaborator/update', $data);
 		$this->load->view('templates/footer');
 	}
 
 	public function update()
 	{
-		$rules = [
-			[
-				'field' => 'first_name',
-				'label' => 'Nome',
-				'rules' => 'required|min_length[3]',
-				'errors' => [
-					'required' => 'O campo %s é obrigatório!',
-					'min_length' => '%s deve ter ao menos 3 caracteres!',
-				],
-			],
-			[
-				'field' => 'last_name',
-				'label' => 'Sobrenome',
-				'rules' => 'required|min_length[3]',
-				'errors' => [
-					'required' => 'O campo %s é obrigatório!',
-					'min_length' => '%s deve ter ao menos 3 caracteres!',
-				],
-
-			],
-			[
-				'field' => 'cellphone',
-				'label' => 'Celular',
-				'rules' => 'required|min_length[3]',
-				'errors' => [
-					'required' => 'O campo %s é obrigatório!',
-					'min_length' => '%s deve ter ao menos 3 caracteres!',
-				],
-			]
-		];
-
-		$this->form_validation->set_rules($rules);
+		$this->form_validation->set_rules($this->rulesMessages());
 
 		if ($this->form_validation->run() === false) {
-			return $this->create();
+			return $this->edit($this->input->post('id'));
 		}
 
 		$collaborator = [
@@ -163,7 +136,7 @@ class Collaborator extends CI_Controller
 			'position' => $this->input->post('position'),
 			'sector' => $this->input->post('sector'),
 			'status' => $this->input->post('status'),
-			'user_id' => $this->input->post('user'),
+			'user_id' => empty($this->input->post('user')) ? null : $this->input->post('user'),
 			'updated_at' => (new DateTime(
 				'now',
 				(new DateTimeZone('America/Sao_Paulo'))
@@ -180,6 +153,7 @@ class Collaborator extends CI_Controller
 	public function delete(int $id)
 	{
 		$this->collaborator->delete($id);
+		$this->session->set_flashdata('success', 'Colaborador Removido Com Sucesso!');
 		return redirect('colaboradores');
 	}
 }

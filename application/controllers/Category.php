@@ -6,65 +6,77 @@ class Category extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
+
 		$this->load->library('session');
+
 		if (!$this->session->userdata('logged_in')) {
 			return redirect('autenticar/acessar');
 		}
+
+		$this->navData = [
+			'nav' => true,
+			'loggedUser' => $this->session->userdata ?? null,
+		];
+
 		$this->load->library('form_validation');
 		$this->load->model('Category_model', 'category');
 	}
 
-	public function index()
+	private function rulesMessages(): array
 	{
-		$data = [
-			'nav' => true,
-			'loggedUser' => $this->session->userdata,
-			'categories' => $this->category->all(),
+		return [
+			'store' => [
+				[
+					'field' => 'category',
+					'label' => 'Categoria',
+					'rules' => 'required|min_length[3]|is_unique[product_categories.name]',
+					'errors' => [
+						'required' => 'O campo %s é obrigatório!',
+						'min_length' => '%s deve ter ao menos 3 caracteres!',
+						'is_unique' => 'A %s informada já existe!',
+					],
+				],
+			],
+			'update' => [
+				[
+					'field' => 'category',
+					'label' => 'Categoria',
+					'rules' => 'required|min_length[3]',
+					'errors' => [
+						'required' => 'O campo %s é obrigatório!',
+						'min_length' => '%s deve ter ao menos 3 caracteres!',
+					],
+				],
+			]
 		];
-		$this->load->view('templates/header', $data);
-		$this->load->view('pages/category/index');
+	}
+
+	public function index(): void
+	{
+		$data = ['categories' => $this->category->all(),];
+		$this->load->view('templates/header', $this->navData);
+		$this->load->view('pages/category/index', $data);
 		$this->load->view('templates/footer');
 	}
 
-	public function create()
+	public function create(): void
 	{
-		$data = [
-			'nav' => true,
-			'loggedUser' => $this->session->userdata,
-		];
-		$this->load->view('templates/header', $data);
+		$this->load->view('templates/header', $this->navData);
 		$this->load->view('pages/category/create');
 		$this->load->view('templates/footer');
 	}
 
-	public function edit(int $id)
+	public function edit(int $id): void
 	{
-		$category = $this->category->findById($id);
-		$data = [
-			'nav' => true,
-			'loggedUser' => $this->session->userdata,
-		];
-		$this->load->view('templates/header', $data);
-		$this->load->view('pages/category/update', ['category' => $category]);
+		$data = ['category' => $this->category->findById($id),];
+		$this->load->view('templates/header', $this->navData);
+		$this->load->view('pages/category/update', $data);
 		$this->load->view('templates/footer');
 	}
 
 	public function store()
 	{
-		$rules = [
-			[
-				'field' => 'category',
-				'label' => 'Categoria',
-				'rules' => 'required|min_length[3]|is_unique[product_categories.name]',
-				'errors' => [
-					'required' => 'O campo %s é obrigatório!',
-					'min_length' => '%s deve ter ao menos 3 caracteres!',
-					'is_unique' => 'A %s informada já existe!',
-				],
-			],
-		];
-
-		$this->form_validation->set_rules($rules);
+		$this->form_validation->set_rules($this->rulesMessages()['store']);
 
 		if ($this->form_validation->run() === false) {
 			return $this->create();
@@ -82,22 +94,10 @@ class Category extends CI_Controller
 
 	public function update()
 	{
-		$rules = [
-			[
-				'field' => 'category',
-				'label' => 'Categoria',
-				'rules' => 'required|min_length[3]',
-				'errors' => [
-					'required' => 'O campo %s é obrigatório!',
-					'min_length' => '%s deve ter ao menos 3 caracteres!',
-				],
-			],
-		];
-
-		$this->form_validation->set_rules($rules);
+		$this->form_validation->set_rules($this->rulesMessages()['update']);
 
 		if ($this->form_validation->run() === false) {
-			return $this->create();
+			return $this->edit($this->input->post('id'));
 		}
 
 		$category = [

@@ -2,9 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Libraries\User;
-use PhpParser\Node\Stmt\TryCatch;
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Auth extends CI_Controller
@@ -15,6 +12,8 @@ class Auth extends CI_Controller
 		$this->load->library('session');
 		$this->load->library('form_validation');
 		$this->load->model('User_model', 'user');
+
+		$this->navData = ['nav' => true,];
 	}
 
 	private function verifyWrongPassword(): bool
@@ -24,37 +23,83 @@ class Auth extends CI_Controller
 		return password_verify($wrongPassword, $wrongCompare);
 	}
 
-	public function index()
+	private function rulesMessages(): array
 	{
-		$data = [
-			'nav' => true,
-			'title' => 'Autenticação',
-			'loggedUser' => null,
+		return [
+			'login' => [
+				[
+					'field' => 'email',
+					'label' => 'E-mail',
+					'rules' => 'required|min_length[3]|valid_email',
+					'errors' => [
+						'required' => 'O campo %s é obrigatório!',
+						'min_length' => '%s deve ter ao menos 3 caracteres!',
+						'valid_email' => '%s deve conter um e-mail válido!',
+					],
+				],
+				[
+					'field' => 'password',
+					'label' => 'Senha',
+					'rules' => 'required',
+					'errors' => [
+						'required' => 'O campo %s é obrigatório!',
+					],
+				],
+			],
+			'store' => [
+				[
+					'field' => 'name',
+					'label' => 'Nome',
+					'rules' => 'required|min_length[3]',
+					'errors' => [
+						'required' => 'O campo %s é obrigatório!',
+						'min_length' => '%s deve ter ao menos 3 caracteres!',
+					],
+				],
+				[
+					'field' => 'email',
+					'label' => 'E-mail',
+					'rules' => 'required|valid_email|is_unique[users.email]',
+					'errors' => [
+						'required' => 'O campo %s é obrigatório!',
+						'min_length' => '%s deve ter ao menos 3 caracteres!',
+						'valid_email' => '%s deve conter um e-mail válido!',
+						'is_unique' => 'O e-mail informado já existe!',
+					],
+				],
+				[
+					'field' => 'password',
+					'label' => 'Senha',
+					'rules' => 'required|min_length[6]',
+					'errors' => [
+						'required' => 'O campo %s é obrigatório!',
+						'min_length' => '%s deve ter ao menos 6 caracteres!',
+					],
+				],
+				[
+					'field' => 'passconf',
+					'label' => 'Confimação de Senha',
+					'rules' => 'required|matches[password]',
+					'errors' => [
+						'required' => 'O campo %s é obrigatório!',
+						'matches' => 'As senhas informadas não são iguais!',
+					],
+				]
+			],
 		];
-		$this->load->view('templates/header', $data);
+	}
+
+	public function index(): void
+	{
+		$this->navData['title'] = 'Autenticação';
+		$this->load->view('templates/header', $this->navData);
 		$this->load->view('pages/auth/login');
 		$this->load->view('templates/footer');
 	}
 
 	public function login()
 	{
-		$rules = [
-			[
-				'field' => 'email',
-				'label' => 'E-mail',
-				'rules' => 'required|valid_email'
-			],
-			[
-				'field' => 'password',
-				'label' => 'Senha',
-				'rules' => 'required',
-				'errors' => [
-					'required' => 'You must provide a %s.',
-				],
-			],
-		];
-
-		$this->form_validation->set_rules($rules);
+		$this->form_validation->set_rules($this->rulesMessages()['login']);
 
 		if ($this->form_validation->run() === false) {
 			return $this->index();
@@ -85,45 +130,20 @@ class Auth extends CI_Controller
 		return redirect('home');
 	}
 
-	public function create()
+	public function create(): void
 	{
-		$this->load->view('templates/header', ['nav' => true]);
+		$this->navData['title'] = 'Cadastrar Usuário';
+		$this->load->view('templates/header', $this->navData);
 		$this->load->view('pages/auth/register');
 		$this->load->view('templates/footer');
 	}
 
 	public function store()
 	{
-		$rules = [
-			[
-				'field' => 'name',
-				'label' => 'Nome',
-				'rules' => 'required'
-			],
-			[
-				'field' => 'email',
-				'label' => 'E-mail',
-				'rules' => 'required|valid_email|is_unique[users.email]'
-			],
-			[
-				'field' => 'password',
-				'label' => 'Senha',
-				'rules' => 'required',
-				'errors' => [
-					'required' => 'You must provide a %s.',
-				],
-			],
-			[
-				'field' => 'passconf',
-				'label' => 'Confimação de Senha',
-				'rules' => 'required',
-			]
-		];
-
-		$this->form_validation->set_rules($rules);
+		$this->form_validation->set_rules($this->rulesMessages()['store']);
 
 		if ($this->form_validation->run() === false) {
-			return $this->register();
+			return $this->create();
 		}
 
 		$user = [
@@ -134,15 +154,15 @@ class Auth extends CI_Controller
 
 		$newUser = $this->user->store($user);
 
-		$loggedUser = array(
+		$loggedUser = [
 			'username'  => $newUser['name'],
 			'email'     => $newUser['email'],
-			'logged_in' => TRUE
-		);
+			'logged_in' => true
+		];
 
 		$this->session->set_userdata($loggedUser);
 
-		return redirect('produtos');
+		return redirect('home');
 	}
 
 	public function logout()

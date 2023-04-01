@@ -6,55 +6,73 @@ class Product extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
+
 		$this->load->library('session');
+
 		if (!$this->session->userdata('logged_in')) {
 			return redirect('autenticar/acessar');
 		}
+
+		$this->navData = [
+			'nav' => true,
+			'loggedUser' => $this->session->userdata,
+		];
+
 		$this->load->library('form_validation');
 		$this->load->model('Product_model', 'product');
 		$this->load->model('Category_model', 'category');
 	}
 
-	public function index()
+	private function rulesMessages(): array
 	{
-		$data = [
-			'nav' => true,
-			'loggedUser' => $this->session->userdata,
-			'products' => $this->product->list(),
+		return [
+			'store' =>
+			[
+				[
+					'field' => 'name',
+					'label' => 'Produto',
+					'rules' => 'required|min_length[3]|is_unique[products.name]',
+					'errors' => [
+						'required' => 'O campo %s é obrigatório!',
+						'min_length' => '%s deve ter ao menos 3 caracteres!',
+						'is_unique' => 'A %s informado já existe!',
+					],
+				],
+			],
+			'update' =>
+			[
+				[
+					'field' => 'name',
+					'label' => 'Produto',
+					'rules' => 'required|min_length[3]',
+					'errors' => [
+						'required' => 'O campo %s é obrigatório!',
+						'min_length' => '%s deve ter ao menos 3 caracteres!',
+					],
+				],
+			],
 		];
-		$this->load->view('templates/header', $data);
-		$this->load->view('pages/product/index');
+	}
+
+	public function index(): void
+	{
+		$data = ['products' => $this->product->list(),];
+		$this->load->view('templates/header', $this->navData);
+		$this->load->view('pages/product/index', $data);
 		$this->load->view('templates/footer');
 	}
 
-	public function create()
+	public function create(): void
 	{
-		$data = [
-			'nav' => true,
-			'loggedUser' => $this->session->userdata,
-			'categories' => $this->category->all(),
-		];
-		$this->load->view('templates/header', $data);
-		$this->load->view('pages/product/create');
+		$data = ['categories' => $this->category->all(),];
+		$this->load->view('templates/header', $this->navData);
+		$this->load->view('pages/product/create', $data);
 		$this->load->view('templates/footer');
 	}
 
 	public function store()
 	{
-		$rules = [
-			[
-				'field' => 'name',
-				'label' => 'Produto',
-				'rules' => 'required|min_length[3]|is_unique[products.name]',
-				'errors' => [
-					'required' => 'O campo %s é obrigatório!',
-					'min_length' => '%s deve ter ao menos 3 caracteres!',
-					'is_unique' => 'A %s informado já existe!',
-				],
-			],
-		];
-
-		$this->form_validation->set_rules($rules);
+		$this->form_validation->set_rules($this->rulesMessages()['store']);
 
 		if ($this->form_validation->run() === false) {
 			return $this->create();
@@ -72,17 +90,15 @@ class Product extends CI_Controller
 		return redirect('produtos');
 	}
 
-	public function edit(int $id)
+	public function edit(int $id): void
 	{
 		$product = $this->product->findById($id);
 		if ($product) {
 			$data = [
-				'nav' => true,
-				'loggedUser' => $this->session->userdata,
 				'categories' => $this->category->all(),
 				'product' => $product,
 			];
-			$this->load->view('templates/header', $data);
+			$this->load->view('templates/header', $this->navData);
 			$this->load->view('pages/product/update', $data);
 			$this->load->view('templates/footer');
 		}
@@ -90,19 +106,7 @@ class Product extends CI_Controller
 
 	public function update()
 	{
-		$rules = [
-			[
-				'field' => 'name',
-				'label' => 'Produto',
-				'rules' => 'required|min_length[3]',
-				'errors' => [
-					'required' => 'O campo %s é obrigatório!',
-					'min_length' => '%s deve ter ao menos 3 caracteres!',
-				],
-			],
-		];
-
-		$this->form_validation->set_rules($rules);
+		$this->form_validation->set_rules($this->rulesMessages()['update']);
 
 		if ($this->form_validation->run() === false) {
 			return $this->edit($this->input->post('id'));

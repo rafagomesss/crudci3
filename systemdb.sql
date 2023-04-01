@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS collaborators(
     first_name VARCHAR(200) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     cellphone VARCHAR(17) NOT NULL,
-    cpf INT UNSIGNED,
+    cpf VARCHAR(14),
     zip_code VARCHAR(9),
     address VARCHAR(255),
     address_number VARCHAR(50),

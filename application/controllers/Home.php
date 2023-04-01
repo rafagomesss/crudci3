@@ -7,7 +7,11 @@ class Home extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->library('session');
-		// $this->load->library('../controllers/auth');
+
+		$this->navData = [
+			'nav' => true,
+			'loggedUser' => $this->session->userdata ?? null,
+		];
 	}
 
 	public function index()
@@ -15,9 +19,8 @@ class Home extends CI_Controller
 		if (!$this->session->userdata('logged_in')) {
 			return redirect('autenticar/acessar');
 		}
-		$this->load->model('user_model');
-		$data['user'] = $this->user_model->all();
-		$this->load->view('templates/header', ['nav' => true, 'loggedUser' => $this->session->userdata ?? null]);
+
+		$this->load->view('templates/header', $this->navData);
 		$this->load->view('pages/index');
 		$this->load->view('templates/footer');
 	}

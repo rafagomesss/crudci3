@@ -1,5 +1,6 @@
 <div class="row justify-content-center">
     <div class="col-10 col-xxl-6 p-5">
+        <?php $this->load->view('templates/flash-messages'); ?>
         <?php $this->load->view('templates/alert-errors'); ?>
         <div class="card">
             <div class="card-header text-center text-bg-dark">
