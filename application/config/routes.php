@@ -52,7 +52,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'home';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = true;
-$route['produtos'] = 'product/list';
-$route['autenticacao/registrar'] = 'auth/register';
-$route['autenticacao/acessar'] = 'auth';
-$route['autenticacao/cadastrar'] = 'auth/store';
+
+$route['autenticar'] = 'auth';
+$route['autenticar/registrar'] = 'auth/create';
+$route['autenticar/acessar'] = 'auth/login';
+$route['autenticar/cadastrar'] = 'auth/store';
+$route['autenticar/sair'] = 'auth/logout';
+
+$route['produtos'] = 'product/index';
+$route['produtos/registrar'] = 'product/create';
+$route['produtos/salvar'] = 'product/store';
+$route['produtos/editar/(:num)'] = 'product/edit/$1';
+$route['produtos/excluir/(:num)'] = 'product/delete/$1';
+$route['produtos/atualizar'] = 'product/update';
+
+$route['categorias'] = 'category/index';
+$route['categorias/registrar'] = 'category/create';
+$route['categorias/salvar'] = 'category/store';
+$route['categorias/editar/(:num)'] = 'category/edit/$1';
+$route['categorias/excluir/(:num)'] = 'category/delete/$1';
+$route['categorias/atualizar'] = 'category/update';
+
+$route['colaboradores'] = 'collaborator/index';
+$route['colaboradores/registrar'] = 'collaborator/create';
+$route['colaboradores/salvar'] = 'collaborator/store';
+$route['colaboradores/editar/(:num)'] = 'collaborator/edit/$1';
+$route['colaboradores/excluir/(:num)'] = 'collaborator/delete/$1';
+$route['colaboradores/atualizar'] = 'collaborator/update';

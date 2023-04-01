@@ -14,9 +14,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('public/assets/fontawesome/css/all.min.css'); ?>">
 </head>
 
 <body>
     <div class="container">
-        <?php !empty($nav) ? $this->load->view('templates/nav-header') : false; ?>
+        <?php !empty($nav) ? $this->load->view('templates/nav-header', [$loggedUser ?? null]) : false; ?>
         <main>

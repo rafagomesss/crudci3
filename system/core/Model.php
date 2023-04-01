@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CodeIgniter
  *
@@ -36,7 +37,7 @@
  * @since	Version 1.0.0
  * @filesource
  */
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * Model Class
@@ -47,7 +48,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author		EllisLab Dev Team
  * @link		https://codeigniter.com/userguide3/libraries/config.html
  */
-class CI_Model {
+class CI_Model
+{
+
+	protected string $table = '';
 
 	/**
 	 * Class constructor
@@ -55,7 +59,9 @@ class CI_Model {
 	 * @link	https://github.com/bcit-ci/CodeIgniter/issues/5332
 	 * @return	void
 	 */
-	public function __construct() {}
+	public function __construct()
+	{
+	}
 
 	/**
 	 * __get magic
@@ -74,4 +80,26 @@ class CI_Model {
 		return get_instance()->$key;
 	}
 
+	public function findById(int $id)
+	{
+		if (!empty($id)) {
+			return $this->db
+				->where('id', $id)
+				->get($this->table)
+				->row_array();
+		}
+	}
+
+	public function all(string $fields = '*'): array
+	{
+		return $this->db
+			->select($fields)
+			->get($this->table)
+			->result_array();
+	}
+
+	public function delete(int $id): void
+    {
+        $this->db->delete($this->table, ['id' => $id]);
+    }
 }
