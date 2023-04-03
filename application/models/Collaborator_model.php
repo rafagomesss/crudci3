@@ -26,4 +26,17 @@ class Collaborator_model extends CI_Model
             throw new Exception($th->getMessage());
         }
     }
+
+    public function activateCollaborator(int $id)
+    {
+        try {
+            $this->db
+                ->where('id', $id)
+                ->set('status', 'Ativo')
+                ->update($this->table);
+        } catch (\Throwable $th) {
+            exit($th->getMessage());
+            throw new Exception($th->getMessage());
+        }
+    }
 }

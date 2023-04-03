@@ -58,6 +58,37 @@ class Collaborator extends CI_Controller
 		];
 	}
 
+	private function checkActivateStatus(): bool
+	{
+		$requiredFields = [
+			'first_name',
+			'last_name',
+			'cellphone'
+		];
+		$postData = array_keys($this->input->post());
+
+		$compare = array_diff($requiredFields, $postData);
+// var_dump($this->input->post('status') === 'Ativo');
+// exit();
+		if (
+			!empty($compare) &&
+			$this->input->post('status') === 'Ativo' &&
+			!empty($this->input->post('id')) &&
+			in_array('is_activating', $postData)
+		) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private function activateCollaborator()
+	{
+		$this->collaborator->activateCollaborator($this->input->post('id'));
+		$this->session->set_flashdata('success', 'Colaborador Ativado Com Sucesso!');
+		return redirect('colaboradores');
+	}
+
 	public function index(): void
 	{
 		$data = ['collaborators' => $this->collaborator->all(),];
@@ -107,6 +138,7 @@ class Collaborator extends CI_Controller
 		$data = [
 			'collaborator' => $this->collaborator->findById($id),
 			'users' => $this->user->all('id, email'),
+			'disabled' => $this->collaborator->findById($id)['status'] === 'Inativo' ? 'disabled' : null,
 		];
 		$this->load->view('templates/header', $this->navData);
 		$this->load->view('pages/collaborator/update', $data);
@@ -115,10 +147,15 @@ class Collaborator extends CI_Controller
 
 	public function update()
 	{
+		// echo '<pre>' . print_r($this->input->post(), true) . '</pre>';
+		// exit();
+		if ($this->checkActivateStatus()) {
+			return $this->activateCollaborator();
+		}
 		$this->form_validation->set_rules($this->rulesMessages());
 
 		if ($this->form_validation->run() === false) {
-			return $this->edit($this->input->post('id'));
+			return redirect('colaboradores/editar/' . $this->input->post('id'));
 		}
 
 		$collaborator = [

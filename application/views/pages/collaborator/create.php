@@ -30,13 +30,13 @@
                 <div class="col">
                     <div class="mb-3">
                         <label for="cpf" class="form-label">CPF</label>
-                        <input id="cpf" name="cpf" type="text" class="form-control" placeholder="XXX.XXX.XXX-XX">
+                        <input id="cpf" name="cpf" type="text" class="form-control">
                     </div>
                 </div>
                 <div class="col">
                     <div class="mb-3">
                         <label for="cellphone" class="form-label">Celular</label>
-                        <input id="cellphone" name="cellphone" type="text" class="form-control" placeholder="(XX) X XXXX-XXXX">
+                        <input id="cellphone" name="cellphone" type="text" class="form-control">
                     </div>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                 <div class="col-2">
                     <div class="mb-3">
                         <label for="zip_code" class="form-label">CEP</label>
-                        <input id="zip_code" name="zip_code" type="text" class="form-control" placeholder="XXXXX-XXX">
+                        <input id="zip_code" name="zip_code" type="text" class="form-control">
                     </div>
                 </div>
                 <div class="col-8">
