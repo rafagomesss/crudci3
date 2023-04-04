@@ -10,7 +10,7 @@ class User_model extends CI_Model
         try {
             $query = $this->db->insert($this->table, $user);
             if ($query) {
-                $this->db->select('name, email');
+                $this->db->select('id, name, email');
                 $this->db->where('email', $user['email']);
                 $newUser = $this->db->get($this->table)->row_array();
                 return $newUser;

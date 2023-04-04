@@ -109,7 +109,25 @@
                         </select>
                     </div>
                 </div>
+                <div class="col d-flex justify-content-end align-items-center">
+                    <div class="mb-3">
+                        <div class="form-check me-2 mt-2">
+                            <input
+                                id="user_register"
+                                name="user_register[]"
+                                class="form-check-input"
+                                type="checkbox"
+                                value="1"
+                            >
+                            <input id="new_user"name="new_user" type="hidden">
+                            <label class="form-check-label " for="new_user">
+                                Cadastrar Novo Usuário
+                            </label>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <div class="user-create"></div>
             <div class="d-grid gap-2">
                 <button class="btn btn-sm btn-success">Salvar</button>
             </div>

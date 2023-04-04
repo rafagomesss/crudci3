@@ -46,9 +46,11 @@ CREATE TABLE IF NOT EXISTS collaborators(
     position VARCHAR(200),
     sector VARCHAR(200),
     status ENUM('Ativo', 'Inativo') DEFAULT 'Ativo' NOT NULL,
+    is_deleted BOOLEAN DEFAULT false,
     user_id INT UNSIGNED,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME,
+    deleted_at DATETIME DEFAULT NULL,
     CONSTRAINT fk_collaborators_user FOREIGN KEY (user_id)
 	REFERENCES users (id)
     ON DELETE NO ACTION,

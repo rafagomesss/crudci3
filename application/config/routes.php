@@ -77,5 +77,5 @@ $route['colaboradores'] = 'collaborator/index';
 $route['colaboradores/registrar'] = 'collaborator/create';
 $route['colaboradores/salvar'] = 'collaborator/store';
 $route['colaboradores/editar/(:num)'] = 'collaborator/edit/$1';
-$route['colaboradores/excluir/(:num)'] = 'collaborator/delete/$1';
+$route['colaboradores/excluir/(:num)'] = 'collaborator/softDelete/$1';
 $route['colaboradores/atualizar'] = 'collaborator/update';

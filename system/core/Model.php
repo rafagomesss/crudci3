@@ -80,22 +80,27 @@ class CI_Model
 		return get_instance()->$key;
 	}
 
-	public function findById(int $id)
+	public function findById(int $id, array $where = [])
 	{
 		if (!empty($id)) {
-			return $this->db
-				->where('id', $id)
-				->get($this->table)
-				->row_array();
+			$query = $this->db->where('id', $id);
+
+			if (count($where) > 0) {
+				$query->where($where);
+			}
+			return $query->get($this->table)
+				->row_array() ?? [];
 		}
 	}
 
-	public function all(string $fields = '*'): array
+	public function all(string $fields = '*', array $where = []): array
 	{
-		return $this->db
-			->select($fields)
-			->get($this->table)
-			->result_array();
+		$query = $this->db->select($fields);
+		if (count($where) > 0) {
+			$query->where($where);
+		}
+		return $query->get($this->table)
+			->result_array() ?? [];
 	}
 
 	public function delete(int $id): void

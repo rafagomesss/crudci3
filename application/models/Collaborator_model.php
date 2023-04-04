@@ -30,9 +30,28 @@ class Collaborator_model extends CI_Model
     public function activateCollaborator(int $id)
     {
         try {
+            $dateNow = (new DateTime('now', (new DateTimeZone('America/Sao_Paulo'))))->format('Y-m-d H:i:s');
             $this->db
                 ->where('id', $id)
                 ->set('status', 'Ativo')
+                ->set('is_deleted', false)
+                ->set('updated_at', $dateNow)
+                ->update($this->table);
+        } catch (\Throwable $th) {
+            exit($th->getMessage());
+            throw new Exception($th->getMessage());
+        }
+    }
+
+    public function softDelete(int $id)
+    {
+        try {
+            $dateNow = (new DateTime('now', (new DateTimeZone('America/Sao_Paulo'))))->format('Y-m-d H:i:s');
+            $this->db
+                ->where('id', $id)
+                ->set('status', 'Inativo')
+                ->set('is_deleted', true)
+                ->set('deleted_at', $dateNow)
                 ->update($this->table);
         } catch (\Throwable $th) {
             exit($th->getMessage());

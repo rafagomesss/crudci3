@@ -68,8 +68,7 @@ class Collaborator extends CI_Controller
 		$postData = array_keys($this->input->post());
 
 		$compare = array_diff($requiredFields, $postData);
-// var_dump($this->input->post('status') === 'Ativo');
-// exit();
+
 		if (
 			!empty($compare) &&
 			$this->input->post('status') === 'Ativo' &&
@@ -89,9 +88,28 @@ class Collaborator extends CI_Controller
 		return redirect('colaboradores');
 	}
 
+	private function filterWhereIndex(): array
+	{
+		$filterStatus = empty($this->input->post('filterStatus')) ? 'Ativo' : $this->input->post('filterStatus');
+		$where = ['is_deleted' => false,];
+		if (!empty($filterStatus) && $filterStatus === 'Removido') {
+			$where['is_deleted'] = true;
+		} else {
+			$where['status'] = $filterStatus;
+		}
+
+		return $where;
+	}
+
 	public function index(): void
 	{
-		$data = ['collaborators' => $this->collaborator->all(),];
+		$where = $this->filterWhereIndex();
+
+		$data = [
+			'collaborators' => $this->collaborator->all('*', $where),
+			'filter' => $where,
+		];
+
 		$this->load->view('templates/header', $this->navData);
 		$this->load->view('pages/collaborator/index', $data);
 		$this->load->view('templates/footer');
@@ -128,18 +146,36 @@ class Collaborator extends CI_Controller
 			'user_id' => empty($this->input->post('user')) ? null : $this->input->post('user'),
 		];
 
+		if (!empty($this->input->post('new_user'))) {
+			$user = [
+				'name' => $collaborator['first_name'] . ' ' . $collaborator['last_name'],
+				'email' => $this->input->post('email'),
+				'password' => password_hash($this->input->post('password'), PASSWORD_BCRYPT),
+			];
+			$this->load->is_loaded('Auth');
+			$newUser = $this->saveUserCollaborator($user);
+			$collaborator['user_id'] = $newUser['id'];
+		}
+
 		$this->collaborator->store($collaborator);
 		$this->session->set_flashdata('success', 'Colaborador Salvo Com Sucesso!');
 		return redirect('colaboradores');
 	}
 
-	public function edit(int $id): void
+	public function edit(int $id)
 	{
+		$disabled = $this->collaborator->findById($id)['status'] ?? null;
 		$data = [
 			'collaborator' => $this->collaborator->findById($id),
 			'users' => $this->user->all('id, email'),
-			'disabled' => $this->collaborator->findById($id)['status'] === 'Inativo' ? 'disabled' : null,
+			'disabled' => $disabled === 'Inativo' || $disabled === 'Removido' ? 'disabled' : null,
 		];
+
+		if (empty($data['collaborator'])) {
+			$this->session->set_flashdata('warning', 'Colaborador Não Encontrado!');
+			return redirect('colaboradores');
+		}
+
 		$this->load->view('templates/header', $this->navData);
 		$this->load->view('pages/collaborator/update', $data);
 		$this->load->view('templates/footer');
@@ -147,8 +183,6 @@ class Collaborator extends CI_Controller
 
 	public function update()
 	{
-		// echo '<pre>' . print_r($this->input->post(), true) . '</pre>';
-		// exit();
 		if ($this->checkActivateStatus()) {
 			return $this->activateCollaborator();
 		}
@@ -187,10 +221,21 @@ class Collaborator extends CI_Controller
 		return redirect('colaboradores');
 	}
 
-	public function delete(int $id)
+	public function softDelete(int $id)
 	{
-		$this->collaborator->delete($id);
+		$this->collaborator->softDelete($id);
 		$this->session->set_flashdata('success', 'Colaborador Removido Com Sucesso!');
 		return redirect('colaboradores');
+	}
+
+	public function saveUserCollaborator(array $user)
+	{
+		$newUser = [
+			'name' => $user['name'],
+			'email' => $user['email'],
+			'password' => password_hash($user['password'], PASSWORD_BCRYPT),
+		];
+
+		return $this->user->store($newUser);
 	}
 }

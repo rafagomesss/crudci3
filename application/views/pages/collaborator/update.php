@@ -13,7 +13,7 @@
         <?php $this->load->view('templates/alert-errors'); ?>
         <?= form_open('colaboradores/atualizar'); ?>
             <div class="row">
-                <input type="hidden" name="id" value="<?= $collaborator['id']; ?>">
+                <input type="hidden" name="id" value="<?= $collaborator['id'] ?? null; ?>">
                 <div class="col">
                     <div class="mb-3">
                         <label for="first_name" class="form-label">Nome</label>
@@ -114,13 +114,30 @@
                     <div class="mb-3">
                         <div class="form-check me-2 mt-2">
                             <input
+                                id="user_register"
+                                name="user_register[]"
+                                class="form-check-input"
+                                type="checkbox"
+                                value="1"
+                            >
+                            <input id="new_user"name="new_user" type="hidden" value="<?= $collaborator['status'] ?? null;?>">
+                            <label class="form-check-label " for="new_user">
+                                Cadastrar Novo Usuário
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto d-flex justify-content-end align-items-center">
+                    <div class="mb-3">
+                        <div class="form-check me-2 mt-2">
+                            <input
                                 id="checkbox_status"
                                 name="checkbox_status[]"
                                 class="form-check-input"
                                 type="checkbox"
-                                <?= $collaborator['status'] === 'Ativo' ? 'checked' : '';?>
+                                <?= !empty($collaborator['status']) && $collaborator['status'] === 'Ativo' ? 'checked' : '';?>
                             >
-                            <input id="status"name="status" type="hidden" value="<?= $collaborator['status'];?>">
+                            <input id="status"name="status" type="hidden" value="<?= $collaborator['status'] ?? null;?>">
                             <label class="form-check-label" for="status">
                                 Ativo
                             </label>
@@ -128,6 +145,7 @@
                     </div>
                 </div>
             </div>
+            <div class="user-create"></div>
             <div class="d-grid gap-2">
                 <button class="btn btn-sm btn-success">Salvar</button>
             </div>
@@ -137,20 +155,3 @@
         </form>
     </div>
 </div>
-<style>
-
-.colored-toast.swal2-icon-warning {
-  background-color: #F8BB86 !important;
-}
-.colored-toast .swal2-title {
-  color: white;
-}
-
-.colored-toast .swal2-close {
-  color: white;
-}
-
-.colored-toast .swal2-html-container {
-  color: white;
-}
-</style>
