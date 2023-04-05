@@ -27,8 +27,7 @@ class Product_model extends CI_Model
     {
         try {
             $this->db
-                ->where('id', $product['id'])
-                ->update($this->table, $product);
+                ->update($this->table, $product, ['id' => $product['id']]);
         } catch (\Throwable $th) {
             exit($th->getMessage());
             throw new Exception($th->getMessage());

@@ -82,7 +82,7 @@ class Product extends CI_Controller
 			'name' => $this->input->post('name', true),
 			'category_id' => empty($this->input->post('category')) ? null : $this->input->post('category'),
 			'description' => $this->input->post('description'),
-			'price' => $this->input->post('price'),
+			'price' => empty($this->input->post('price')) ? null : $this->input->post('price'),
 		];
 
 		$this->product->store($product);
@@ -117,6 +117,7 @@ class Product extends CI_Controller
 			'name' => $this->input->post('name'),
 			'category_id' => empty($this->input->post('category')) ? null : $this->input->post('category'),
 			'description' => $this->input->post('description'),
+			'price' => empty($this->input->post('price')) ? null : $this->input->post('price'),
 		];
 
 		$this->product->update($product);

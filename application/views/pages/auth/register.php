@@ -8,21 +8,22 @@
             </div>
             <div class="card-body">
                 <form method="post" action="<?= base_url('autenticar/cadastrar'); ?>">
-                    <div class="col form-group">
+                    <div class="col form-group mb-3">
                         <label for="name">Nome:</label>
-                        <input type="text" class="form-control mb-3" name="name" id="name" placeholder="Digite seu nome completo">
+                        <input type="text" class="form-control" name="name" id="name" placeholder="Digite seu nome completo">
                     </div>
-                    <div class="col form-group">
+                    <div class="col form-group mb-3">
                         <label for="email">E-mail:</label>
-                        <input type="text" class="form-control mb-3" name="email" id="email" placeholder="Digite seu e-mail">
+                        <input type="text" class="form-control" name="email" id="email" placeholder="Digite seu e-mail">
                     </div>
-                    <div class="col form-group">
+                    <div class="col form-group mb-3">
                         <label for="password">Senha:</label>
-                        <input type="password" class="form-control mb-3" name="password" id="password" placeholder="Digite sua senha">
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Digite sua senha">
+                        <div id="passwordHelp" class="form-text text-info"><small>A senha deve conter no mínimo 6 caracteres.</small></div>
                     </div>
-                    <div class="col form-group">
+                    <div class="col form-group mb-3">
                         <label for="passconf">Confirme sua Senha:</label>
-                        <input type="password" class="form-control mb-3" name="passconf" id="passconf" placeholder="Confirme sua senha">
+                        <input type="password" class="form-control" name="passconf" id="passconf" placeholder="Confirme sua senha">
                     </div>
                     <div class="d-grid gap-2 mt-2">
                         <button class="btn btn-sm btn-primary">Cadastrar</button>

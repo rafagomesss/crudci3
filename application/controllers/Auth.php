@@ -111,6 +111,7 @@ class Auth extends CI_Controller
 		];
 
 		$user = $this->user->findByEmail($data['email']);
+
 		if (
 			empty($user) ||
 			!password_verify($data['password'], $user['password'])

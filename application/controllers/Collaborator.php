@@ -23,6 +23,17 @@ class Collaborator extends CI_Controller
 		$this->load->model('User_model', 'user');
 	}
 
+	private function saveUserCollaborator(array $user): array
+	{
+		$newUser = [
+			'name' => $user['name'],
+			'email' => $user['email'],
+			'password' => password_hash($user['password'], PASSWORD_BCRYPT),
+		];
+
+		return $this->user->store($newUser) ?? [];
+	}
+
 	private function rulesMessages(): array
 	{
 		return [
@@ -226,16 +237,5 @@ class Collaborator extends CI_Controller
 		$this->collaborator->softDelete($id);
 		$this->session->set_flashdata('success', 'Colaborador Removido Com Sucesso!');
 		return redirect('colaboradores');
-	}
-
-	public function saveUserCollaborator(array $user)
-	{
-		$newUser = [
-			'name' => $user['name'],
-			'email' => $user['email'],
-			'password' => password_hash($user['password'], PASSWORD_BCRYPT),
-		];
-
-		return $this->user->store($newUser);
 	}
 }

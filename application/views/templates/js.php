@@ -3,11 +3,12 @@
 <script src="<?= base_url('public/assets/fontawesome/js/all.min.js'); ?>"></script>
 <script src="<?= base_url('public/assets/js/sweetalert/sweetalert2.all.min.js'); ?>"></script>
 <script src="<?= base_url('public/assets/js/inputmask/jquery.mask.min.js'); ?>"></script>
+<script src="<?= base_url('public/assets/js/helper/functions.js'); ?>"></script>
 
 <?php if (!empty($this->uri->rsegment(2)) && $this->uri->rsegment(2) === 'login') : ?>
     <script src="<?= base_url('public/assets/js/auth/login.js'); ?>"></script>
 <?php endif; ?>
-<?= '<h2>' . $this->uri->rsegment(2) . '</h2>' ?>
+<!-- <?= '<h2>' . $this->uri->rsegment(2) . '</h2>' ?> -->
 <?php if (!empty($this->uri->rsegment(1)) && $this->uri->rsegment(1) === 'collaborator') : ?>
     <?php if (!empty($this->uri->rsegment(2)) && $this->uri->rsegment(2) === 'index') : ?>
         <script src="<?= base_url('public/assets/js/collaborator/index.js'); ?>"></script>
@@ -17,4 +18,18 @@
     <?php endif; ?>
 <?php endif; ?>
 
+<?php if (!empty($this->uri->rsegment(1)) && $this->uri->rsegment(1) === 'category') : ?>
+    <?php if (!empty($this->uri->rsegment(2)) && $this->uri->rsegment(2) === 'index') : ?>
+        <script src="<?= base_url('public/assets/js/category/index.js'); ?>"></script>
+    <?php endif; ?>
+<?php endif; ?>
+
+<?php if (!empty($this->uri->rsegment(1)) && $this->uri->rsegment(1) === 'product') : ?>
+    <?php if (!empty($this->uri->rsegment(2)) && $this->uri->rsegment(2) === 'index') : ?>
+        <script src="<?= base_url('public/assets/js/product/index.js'); ?>"></script>
+    <?php endif; ?>
+    <?php if (!empty($this->uri->rsegment(2)) && $this->uri->rsegment(2) === 'edit' ||  $this->uri->rsegment(2) === 'create') : ?>
+        <script src="<?= base_url('public/assets/js/product/form.js'); ?>"></script>
+    <?php endif; ?>
+<?php endif; ?>
 

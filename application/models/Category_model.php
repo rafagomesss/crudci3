@@ -18,9 +18,7 @@ class Category_model extends CI_Model
     public function update(array $category)
     {
         try {
-            $this->db
-                ->where('id', $category['id'])
-                ->update($this->table, $category);
+            $this->db->update($this->table, $category, ['id' => $category['id']]);
         } catch (\Throwable $th) {
             exit($th->getMessage());
             throw new Exception($th->getMessage());

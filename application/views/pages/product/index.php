@@ -31,13 +31,13 @@
                     <?php foreach ($products as $product) : ?>
                         <tr class="text-center">
                             <td>#<?= $product['id']; ?></td>
-                            <td><?= $product['name']; ?></td>
+                            <td><span class="product-name"><?= $product['name']; ?></span></td>
                             <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;"><?= $product['description']; ?></td>
-                            <td><?= $product['price']; ?></td>
+                            <td><?= $product['price'] ? 'R$ '. number_format($product['price'], 2, ',', '.') : null; ?></td>
                             <td><?= $product['category']; ?></td>
                             <td class="text-center">
                                 <a class="btn btn-sm btn-success" href="<?= base_url(); ?>produtos/editar/<?= $product['id']; ?>" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a class="btn btn-sm btn-danger" href="<?= base_url(); ?>produtos/excluir/<?= $product['id']; ?>" title="Excluir"><i class="fa-solid fa-trash-can"></i></a>
+                                <a id="remove-product" class="btn btn-sm btn-danger remove-product" href="<?= base_url(); ?>produtos/excluir/<?= $product['id']; ?>" title="Excluir"><i class="fa-solid fa-trash-can"></i></a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

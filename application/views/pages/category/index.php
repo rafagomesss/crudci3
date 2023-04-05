@@ -28,10 +28,10 @@
                     <?php foreach ($categories as $category) : ?>
                         <tr>
                             <td>#<?= $category['id']; ?></td>
-                            <td><?= $category['name']; ?></td>
+                            <td><span class="category-name"><?= $category['name']; ?></span></td>
                             <td class="text-center">
                                 <a class="btn btn-sm btn-success px-3" href="<?= base_url(); ?>categorias/editar/<?= $category['id']; ?>" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a class="btn btn-sm btn-danger px-3" href="<?= base_url(); ?>categorias/excluir/<?= $category['id']; ?>" title="Excluir"><i class="fa-solid fa-trash-can"></i></a>
+                                <a id="remove-category" class="btn btn-sm btn-danger px-3 remove-category" href="<?= base_url(); ?>categorias/excluir/<?= $category['id']; ?>" title="Excluir"><i class="fa-solid fa-trash-can"></i></a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

@@ -12,7 +12,7 @@ $(document).ready(() => {
 		});
 	}
 
-	$('#cpf.form-control').mask('000.000.000-00', {
+	$('#cpf.form-control, .cpf-validate').mask('000.000.000-00', {
 		placeholder: '___.___.___-__',
 	});
 
@@ -189,4 +189,8 @@ $(document).ready(() => {
 		});
 	}
 
+	const inputCPF =  $("#cpf, .cpf-validate");
+	 if (inputCPF.length) {
+		validarCpf(inputCPF);
+	 }
 });

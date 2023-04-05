@@ -19,8 +19,11 @@ class Collaborator_model extends CI_Model
     {
         try {
             $this->db
-                ->where('id', $collaborator['id'])
-                ->update($this->table, $collaborator);
+                ->update(
+                    $this->table,
+                    $collaborator,
+                    ['id' => $collaborator['id']]
+                );
         } catch (\Throwable $th) {
             exit($th->getMessage());
             throw new Exception($th->getMessage());
@@ -30,13 +33,13 @@ class Collaborator_model extends CI_Model
     public function activateCollaborator(int $id)
     {
         try {
-            $dateNow = (new DateTime('now', (new DateTimeZone('America/Sao_Paulo'))))->format('Y-m-d H:i:s');
+            $data = [
+                'status' => 'Ativo',
+                'is_deleted' => false,
+                'updated_at' => nowDateTime(),
+            ];
             $this->db
-                ->where('id', $id)
-                ->set('status', 'Ativo')
-                ->set('is_deleted', false)
-                ->set('updated_at', $dateNow)
-                ->update($this->table);
+                ->update($this->table, $data, ['id' => $id]);
         } catch (\Throwable $th) {
             exit($th->getMessage());
             throw new Exception($th->getMessage());
@@ -46,13 +49,13 @@ class Collaborator_model extends CI_Model
     public function softDelete(int $id)
     {
         try {
-            $dateNow = (new DateTime('now', (new DateTimeZone('America/Sao_Paulo'))))->format('Y-m-d H:i:s');
+            $data = [
+                'status' => 'Inativo',
+                'is_deleted' => true,
+                'deleted_at' => nowDateTime(),
+            ];
             $this->db
-                ->where('id', $id)
-                ->set('status', 'Inativo')
-                ->set('is_deleted', true)
-                ->set('deleted_at', $dateNow)
-                ->update($this->table);
+                ->update($this->table, $data, ['id' => $id]);
         } catch (\Throwable $th) {
             exit($th->getMessage());
             throw new Exception($th->getMessage());

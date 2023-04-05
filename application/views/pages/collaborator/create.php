@@ -30,7 +30,7 @@
                 <div class="col">
                     <div class="mb-3">
                         <label for="cpf" class="form-label">CPF</label>
-                        <input id="cpf" name="cpf" type="text" class="form-control">
+                        <input id="cpf" name="cpf" type="text" class="form-control cpf-validate">
                     </div>
                 </div>
                 <div class="col">

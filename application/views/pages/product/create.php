@@ -21,10 +21,14 @@
                     <div class="mb-3">
                         <label for="category" class="form-label">Categoria</label>
                         <select class="form-select" name="category" id="category">
-                            <option selected value="">Selecione uma opção...</option>
-                            <?php foreach ($categories as $category) : ?>
-                                <option value="<?= $category['id']; ?>"><?= $category['name']; ?></option>
-                            <?php endforeach; ?>
+                            <?php if (empty($categories)) : ?>
+                                <option value="">Nenhuma categoria cadastrada</option>
+                            <?php else : ?>
+                                <option selected value="">Selecione uma opção...</option>
+                                <?php foreach ($categories as $category) : ?>
+                                    <option value="<?= $category['id']; ?>"><?= $category['name']; ?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </select>
                     </div>
                 </div>
@@ -33,17 +37,25 @@
                         <label for="price" class="form-label">Preço</label>
                         <div class="input-group mb-3">
                             <span class="input-group-text">R$</span>
-                            <input id="price" name="price" type="text" class="form-control" placeholder="Digite o valor do produto">
+                            <input id="price" name="price" type="text" class="form-control money" placeholder="Digite o valor do produto">
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Descrição do Produto</label>
-                <textarea id="description" name="description" class="form-control" rows="3"><?= $product['description'] ?? null; ?></textarea>
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Descrição do Produto</label>
+                        <textarea id="description" name="description" class="form-control" rows="3"><?= $product['description'] ?? null; ?></textarea>
+                    </div>
+                </div>
             </div>
-            <div class="d-grid gap-2">
-                <button class="btn btn-sm btn-success">Salvar</button>
+            <div class="row">
+                <div class="col">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-sm btn-success">Salvar</button>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
